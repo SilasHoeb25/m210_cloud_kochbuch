@@ -1,0 +1,23 @@
+name: Deploy Kochbuch (manuell)
+
+on:
+  workflow_dispatch:   # Nur manuell auslösbar
+
+jobs:
+  deploy:
+    name: Deploy auf lokalen Docker
+    runs-on: self-hosted
+
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v4
+
+      - name: .env aus GitHub Secrets erzeugen
+        run: |
+          echo MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} > .env
+          echo MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }} >> .env
+          echo MYSQL_USER=${{ secrets.MYSQL_USER }} >> .env
+          echo MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} >> .env
+
+      - name: Docker Compose Deploy
+        run: docker compose up --build -d
