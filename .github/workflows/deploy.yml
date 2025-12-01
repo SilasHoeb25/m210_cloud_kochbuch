@@ -26,9 +26,12 @@ jobs:
           Add-Content -Path ".env" -Value "MYSQL_DATABASE=$env:MYSQL_DATABASE"
           Add-Content -Path ".env" -Value "MYSQL_USER=$env:MYSQL_USER"
           Add-Content -Path ".env" -Value "MYSQL_PASSWORD=$env:MYSQL_PASSWORD"
+        
+      - name: bestehende Container entfernen
+        uses: powershell
+        run: docker compose down || echo "Keine existierenden Container, OK"
 
       - name: Docker Compose Deploy
         shell: powershell
         run: docker compose up --build -d
-        # Falls bei dir nur "docker-compose" existiert:
-        # run: docker-compose up --build -d
+
