@@ -1,24 +1,34 @@
 name: Deploy Kochbuch (manuell)
 
 on:
-  workflow_dispatch:   # Nur manuell auslösbar
+  workflow_dispatch:
 
 jobs:
   deploy:
     name: Deploy auf lokalen Docker
     runs-on: self-hosted
 
+    # Secrets als Environment-Variablen für den Job bereitstellen
+    env:
+      MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+      MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+      MYSQL_USER: ${{ secrets.MYSQL_USER }}
+      MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+
     steps:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: .env aus GitHub Secrets erzeugen
+      - name: .env aus Environment-Variablen erzeugen
+        shell: pwsh
         run: |
-          echo MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} > .env
-          echo MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }} >> .env
-          echo MYSQL_USER=${{ secrets.MYSQL_USER }} >> .env
-          echo MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} >> .env
+          Set-Content -Path ".env" -Value "MYSQL_ROOT_PASSWORD=$env:MYSQL_ROOT_PASSWORD"
+          Add-Content -Path ".env" -Value "MYSQL_DATABASE=$env:MYSQL_DATABASE"
+          Add-Content -Path ".env" -Value "MYSQL_USER=$env:MYSQL_USER"
+          Add-Content -Path ".env" -Value "MYSQL_PASSWORD=$env:MYSQL_PASSWORD"
 
       - name: Docker Compose Deploy
-        shell: bash
+        shell: pwsh
         run: docker compose up --build -d
+        # Falls bei dir nur 'docker-compose' existiert, dann:
+        # run: docker-compose up --build -d
