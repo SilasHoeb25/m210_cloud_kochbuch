@@ -36,8 +36,7 @@ jobs:
       - name: Deployment starten (neu bauen & hochfahren)
         shell: powershell
         run: docker compose up --build -d
-        # Falls bei dir 'docker-compose' statt 'docker compose' existiert:
-        # run: docker-compose up --build -d
 
-        run: docker compose up --build -d
+
+
 
