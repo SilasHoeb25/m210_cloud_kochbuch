@@ -3,7 +3,7 @@ version: "3.9"
 services:
   db:
     image: mysql:8.0
-    container_name: kochbuch-db
+    container_name: kochbuch-db-cd
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: kochbuch
@@ -17,7 +17,7 @@ services:
 
   backend:
     build: ./backend
-    container_name: kochbuch-backend
+    container_name: kochbuch-backend-cd
     environment:
       MYSQL_HOST: db
       MYSQL_PORT: 3306
@@ -34,7 +34,7 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: kochbuch-frontend
+    container_name: kochbuch-frontend-cd
     depends_on:
       - backend
     ports:
