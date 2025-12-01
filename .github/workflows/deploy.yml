@@ -31,7 +31,7 @@ jobs:
         shell: powershell
         run: |
           Write-Host "Stopping previous Docker containers (if any)..."
-          docker compose down || Write-Host "No existing containers to remove"
+          docker compose down
 
       - name: Deployment starten (neu bauen & hochfahren)
         shell: powershell
