@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: kochbuch-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: kochbuch
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: secret
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - kochbuch-net
+
+  backend:
+    build: ./backend
+    container_name: kochbuch-backend
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_DB: kochbuch
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: secret
+    depends_on:
+      - db
+    # Backend nur im internen Netzwerk, kein Port nach außen nötig
+    # ports:
+    #   - "8081:8080"
+    networks:
+      - kochbuch-net
+
+  frontend:
+    build: ./frontend
+    container_name: kochbuch-frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"   # Browser -> Frontend
+    networks:
+      - kochbuch-net
+
+networks:
+  kochbuch-net:
+
+volumes:
+  db_data:

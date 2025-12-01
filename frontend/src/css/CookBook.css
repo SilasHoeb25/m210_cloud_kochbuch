@@ -1,0 +1,32 @@
+.cookbook-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    position: relative;
+    padding: 20px;
+  }
+  
+  .recipie-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .recipie-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .recipie-item:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
