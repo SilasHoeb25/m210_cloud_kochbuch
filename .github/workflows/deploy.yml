@@ -8,7 +8,7 @@ jobs:
     name: Deploy auf lokalen Docker
     runs-on: self-hosted
 
-    # Secrets als Environment-Variablen verfügbar machen
+    # Secrets als Environment-Variablen im Job verfügbar machen
     env:
       MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
       MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
@@ -19,19 +19,25 @@ jobs:
       - name: Code auschecken
         uses: actions/checkout@v4
 
-      - name: .env aus Environment-Variablen erzeugen
+      - name: .env Datei erzeugen
         shell: powershell
         run: |
           Set-Content -Path ".env" -Value "MYSQL_ROOT_PASSWORD=$env:MYSQL_ROOT_PASSWORD"
           Add-Content -Path ".env" -Value "MYSQL_DATABASE=$env:MYSQL_DATABASE"
           Add-Content -Path ".env" -Value "MYSQL_USER=$env:MYSQL_USER"
           Add-Content -Path ".env" -Value "MYSQL_PASSWORD=$env:MYSQL_PASSWORD"
-        
-      - name: bestehende Container entfernen
-        uses: powershell
-        run: docker compose down || echo "Keine existierenden Container, OK"
 
-      - name: Docker Compose Deploy
+      - name: Alte Docker-Container stoppen & entfernen
         shell: powershell
+        run: |
+          Write-Host "Stopping previous Docker containers (if any)..."
+          docker compose down || Write-Host "No existing containers to remove"
+
+      - name: Deployment starten (neu bauen & hochfahren)
+        shell: powershell
+        run: docker compose up --build -d
+        # Falls bei dir 'docker-compose' statt 'docker compose' existiert:
+        # run: docker-compose up --build -d
+
         run: docker compose up --build -d
 
