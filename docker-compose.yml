@@ -36,7 +36,7 @@ services:
     depends_on:
       - backend
     ports:
-      - "8080:80"
+      - "42069:80"
     networks:
       - kochbuch-net
 
