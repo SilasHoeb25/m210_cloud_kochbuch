@@ -20,4 +20,5 @@ jobs:
           echo MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} >> .env
 
       - name: Docker Compose Deploy
+        shell: bash
         run: docker compose up --build -d
