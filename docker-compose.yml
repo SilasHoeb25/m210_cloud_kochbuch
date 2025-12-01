@@ -1,5 +1,4 @@
 services:
-
   db:
     image: mysql:8.0
     container_name: kochbuch-db
@@ -11,8 +10,8 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+    networks:
+      - kochbuch-net
 
 
   backend:
@@ -32,11 +31,12 @@ services:
 
   frontend:
     build: ./frontend
-    container_name: kochbuch-frontend-cd
+    container_name: kochbuch-frontend
+    restart: unless-stopped
     depends_on:
       - backend
     ports:
-      - "8080:80"   # Browser -> Frontend
+      - "8080:80"
     networks:
       - kochbuch-net
 
